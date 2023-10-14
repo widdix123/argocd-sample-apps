@@ -11,6 +11,6 @@ spec:
       valueFrom:
         secretKeyRef:
           key: success
-          name: redis-secret
+          name: {{ include "redis.fullname" . }}-secret
     image: redis
     name: redis
