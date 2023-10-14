@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "redis.fullname" . }}-redis
+  labels:
+  {{- include "redis.labels" . | nindent 4 }}
+spec:
+  containers:
+  - env:
+    - name: isReadSuccessful
+      valueFrom:
+        secretKeyRef:
+          key: success
+          name: redis-secret
+    image: redis
+    name: redis
