@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        service: '{{ path }}'
+        service: '{{ path[2] }}'
       name: '{{path.basename}}-{{env}}'
     spec:
       destination:
