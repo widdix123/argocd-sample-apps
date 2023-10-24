@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: balance-cache-appset
+  namespace: argocd
+spec:
+  generators:
+  - matrix:
+      generators:
+      - list:
+          elements:
+          - env: dev
+          - env: prod
+      - git:
+          repoURL: https://github.com/rutwickjain87/argocd-sample-apps.git
+          revision: main
+          directories:
+            - path: demo/helm/*
+  template:
+    metadata:
+      labels:
+        service: '{{ path }}'
+      name: '{{path.basename}}-{{env}}'
+    spec:
+      destination:
+        name: 'https://kubernetes.default.svc'
+        namespace: '{{env}}'
+      project: default
+      source:
+        helm:
+          valueFiles:
+            - "values-{{env}}.yaml"
+        path: '{{path}}'
+        repoURL: https://github.com/rutwickjain87/argocd-sample-apps.git
+        targetRevision: main
+        plugin:
+          name: argocd-vault-plugin-helm
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: false
+        syncOptions:
+        - CreateNamespace=true

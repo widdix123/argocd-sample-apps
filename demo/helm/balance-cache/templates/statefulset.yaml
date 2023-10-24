@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "balance-cache.fullname" . }}-balance-cache-development
+  labels:
+  {{- include "balance-cache.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.balanceCacheDevelopment.replicas }}
+  selector:
+    matchLabels:
+      app: balance-cache-development
+  serviceName: {{ include "balance-cache.fullname" . }}-balance-cache-development
+  template:
+    metadata:
+      labels:
+        app: balance-cache-development
+    spec:
+      containers:
+      - env:
+        - name: REDIS_ARGS
+          value: {{ quote .Values.balanceCacheDevelopment.balanceCacheDevelopment.env.redisArgs
+            }}
+        - name: CONFFILE
+          value: {{ quote .Values.balanceCacheDevelopment.balanceCacheDevelopment.env.conffile
+            }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.balanceCacheDevelopment.balanceCacheDevelopment.image.repository
+          }}:{{ .Values.balanceCacheDevelopment.balanceCacheDevelopment.image.tag |
+          default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.balanceCacheDevelopment.balanceCacheDevelopment.imagePullPolicy
+          }}
+        livenessProbe:
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          tcpSocket:
+            port: 2020
+        name: balance-cache-development
+        ports:
+        - containerPort: 2020
+          name: redis
+        readinessProbe:
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          tcpSocket:
+            port: 2020
+        resources: {{- toYaml .Values.balanceCacheDevelopment.balanceCacheDevelopment.resources
+          | nindent 10 }}
+        securityContext: {{- toYaml .Values.balanceCacheDevelopment.balanceCacheDevelopment.containerSecurityContext
+          | nindent 10 }}
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /config
+          name: config
+      runtimeClassName: runc-development
+      securityContext:
+        fsGroup: 3000
+        runAsGroup: 3000
+        runAsUser: 1000
+      volumes:
+      - emptyDir: {}
+        name: data
+      - configMap:
+          items:
+          - key: balance-cache-config
+            path: redis-stack.conf
+          name: {{ include "balance-cache.fullname" . }}-balance-cache-config
+        name: config
+  updateStrategy: {}

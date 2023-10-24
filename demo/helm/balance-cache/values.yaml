@@ -1,0 +1,32 @@
+balanceCacheConfig:
+  balanceCacheConfig: |-
+    maxmemory 512mb
+    maxmemory-policy allkeys-lru
+balanceCacheDevelopment:
+  balanceCacheDevelopment:
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+    env:
+      conffile: /config/redis-stack.conf
+      redisArgs: --port 2020
+    image:
+      repository: redis/redis-stack
+      tag: 6.2.4-v4
+    imagePullPolicy: Always
+    resources:
+      limits:
+        cpu: 200m
+        memory: 600Mi
+      requests:
+        cpu: 100m
+        memory: 600Mi
+  replicas: 1
+clusterBalanceCacheRedisIp:
+  ports:
+  - name: http
+    port: 2020
+    protocol: TCP
+    targetPort: 2020
+  type: ClusterIP
+kubernetesClusterDomain: cluster.local

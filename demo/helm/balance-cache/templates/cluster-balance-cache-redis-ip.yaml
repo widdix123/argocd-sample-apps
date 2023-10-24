@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "balance-cache.fullname" . }}-cluster-balance-cache-redis-ip
+  labels:
+    app: cluster-balance-cache-redis-ip
+  {{- include "balance-cache.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.clusterBalanceCacheRedisIp.type }}
+  selector:
+    app: balance-cache-development
+  {{- include "balance-cache.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.clusterBalanceCacheRedisIp.ports | toYaml | nindent 2 -}}
