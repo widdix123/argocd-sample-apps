@@ -23,7 +23,7 @@ spec:
       name: '{{path.basename}}-{{env}}'
     spec:
       destination:
-        name: 'https://kubernetes.default.svc'
+        name: in-cluster
         namespace: '{{env}}'
       project: default
       source:
