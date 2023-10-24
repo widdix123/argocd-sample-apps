@@ -33,8 +33,6 @@ spec:
         path: '{{path}}'
         repoURL: https://github.com/rutwickjain87/argocd-sample-apps.git
         targetRevision: main
-        plugin:
-          name: argocd-vault-plugin-helm
       syncPolicy:
         automated:
           prune: false
