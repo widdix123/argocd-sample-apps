@@ -4,10 +4,9 @@ kind: Kustomization
 namePrefix:  dev-
 
 helmGlobals:
-  chartHome: ./charts
+  chartHome: charts
 
 helmCharts:
 - name: balance-cache
   releaseName: balance-cache
-  values: values.yaml
-  releaseNamespace: default
+  namespace: default
