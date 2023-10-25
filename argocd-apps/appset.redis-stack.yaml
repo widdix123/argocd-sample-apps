@@ -27,14 +27,17 @@ spec:
         namespace: '{{env}}'
       project: default
       source:
-        helm:
-          valueFiles:
-            - "values-{{env}}.yaml"
+        #helm:
+        #  valueFiles:
+        #    - "values-{{env}}.yaml"
         path: '{{path}}'
         repoURL: https://github.com/rutwickjain87/argocd-sample-apps.git
         targetRevision: main
         plugin:
           name: argocd-vault-plugin-helm
+          env:
+          - name: HELM_ARGS
+            value: -f "values-{{env}}.yaml"
       syncPolicy:
         automated:
           prune: false
