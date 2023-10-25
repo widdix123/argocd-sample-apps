@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: sample-kustomize-appset
+  namespace: argocd
+spec:
+  generators:
+  - matrix:
+      generators:
+      - list:
+          elements:
+          - env: dev
+      - git:
+          repoURL: https://github.com/rutwickjain87/argocd-sample-apps.git
+          revision: main
+          directories:
+            - path: demo/kustomize-with-helm/*
+  template:
+    metadata:
+      labels:
+        service: '{{ path[2] }}'
+      name: '{{path.basename}}-{{env}}'
+    spec:
+      destination:
+        name: in-cluster
+        #namespace: '{{env}}'
+        namespace: default
+      project: default
+      source:
+        path: '{{path}}'
+        repoURL: https://github.com/rutwickjain87/argocd-sample-apps.git
+        targetRevision: main
+        plugin:
+          name: argocd-vault-plugin-kustomize-helm
+          env:
+          - name: HELM_ARGS
+            value: -f "values-{{env}}.yaml"
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: false
+        syncOptions:
+        - CreateNamespace=true
