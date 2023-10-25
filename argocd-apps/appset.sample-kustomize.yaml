@@ -9,7 +9,7 @@ spec:
       generators:
       - list:
           elements:
-          - env: dev
+          - env: prod
       - git:
           repoURL: https://github.com/rutwickjain87/argocd-sample-apps.git
           revision: main
