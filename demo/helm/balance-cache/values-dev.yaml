@@ -1,5 +1,5 @@
 secret:
-  param1: "<path:secrets/devops/data/env/dev#param1"
+  param1: "<path:secrets/devops/data/env/dev#param1>"
 balanceCacheConfig:
   balanceCacheConfig: |-
     maxmemory 512mb
